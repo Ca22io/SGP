@@ -1,0 +1,30 @@
+# Dependencias
+/vendor/
+/node_modules/
+
+# Variaveis de ambiente e arquivos locais
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs e arquivos temporarios
+*.log
+/logs/
+/tmp/
+/cache/
+
+# Dados persistentes do banco local
+/database/data/
+
+# Sistema operacional e IDE
+.DS_Store
+Thumbs.db
+/.idea/
+/.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Cobertura e arquivos gerados
+/coverage/
+*.cache
