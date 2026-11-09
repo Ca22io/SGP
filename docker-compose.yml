@@ -1,19 +1,24 @@
-version: '3.8'
-
 services:
-  # Serviço do Banco de Dados PostgreSQL
+  # Serviço do banco de dados MySQL
   db:
-    image: postgres:16
-    container_name: postgres_db
+    image: mysql:8.4
+    container_name: mysql_db
     restart: always
     environment:
-      POSTGRES_DB: meubanco
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: 123456
+      MYSQL_DATABASE: meubanco
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: 123456
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uuser", "-p123456"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   # Serviço do PHP com Apache
   web:
@@ -24,9 +29,16 @@ services:
       - "8000:80"
     volumes:
       - .:/var/www
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: meubanco
+      DB_USERNAME: user
+      DB_PASSWORD: 123456
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
-# Define um volume nomeado para persistir os dados do PostgreSQL
+# Define um volume nomeado para persistir os dados do MySQL
 volumes:
   db_data:
