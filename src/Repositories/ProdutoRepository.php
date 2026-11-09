@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Repositories;
+
+use App\Config\Database;
+
 class ProdutoRepository implements ProdutoRepositoryInterface
 {
     private \mysqli $conn;
@@ -19,21 +23,18 @@ class ProdutoRepository implements ProdutoRepositoryInterface
 
     public function getProdutoById($id)
     {
-        
-        $query = "SELECT * FROM produtos WHERE id = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $id, PDO::PARAM_INT);
+        $stmt = $this->conn->prepare("SELECT * FROM produtos WHERE id = ?");
+        $stmt->bind_param("i", $id);
         $stmt->execute();
-        $result = $stmt->get_result();
 
-        return $result->fetch_assoc();
+        return $stmt->get_result()->fetch_assoc();
     }
 
     public function createProduto($produto)
     {
-        $query = "INSERT INTO produtos (nome, preco) VALUES (?, ?)";
+        $query = "INSERT INTO produtos (nome, descricao, preco) VALUES (?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("sd", $produto['nome'], PDO::PARAM_STR, $produto['preco'], PDO::PARAM_STR);
+        $stmt->bind_param("ssd", $produto['nome'], $produto['descricao'], $produto['preco']);
         return $stmt->execute();
     }
 
@@ -41,7 +42,7 @@ class ProdutoRepository implements ProdutoRepositoryInterface
     {
         $query = "UPDATE produtos SET nome = ?, preco = ? WHERE id = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("sdi", $produto['nome'], PDO::PARAM_STR, $produto['preco'], PDO::PARAM_STR, $id, PDO::PARAM_INT);
+        $stmt->bind_param("sdi", $produto['nome'], $produto['preco'], $id);
         return $stmt->execute();
     }
 
@@ -49,7 +50,7 @@ class ProdutoRepository implements ProdutoRepositoryInterface
     {
         $query = "DELETE FROM produtos WHERE id = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $id, PDO::PARAM_INT);
+        $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
 }

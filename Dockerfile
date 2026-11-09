@@ -11,5 +11,8 @@ RUN docker-php-ext-install pdo pdo_mysql mysqli \
 		/etc/apache2/sites-available/*.conf \
 		/etc/apache2/apache2.conf
 
-# Habilita o mod_rewrite do Apache (opcional, mas muito útil)
-RUN a2enmod rewrite
+# Habilita o mod_rewrite e permite o uso do .htaccess em public/
+RUN a2enmod rewrite \
+	&& printf '%s\n' '<Directory /var/www/public>' '    AllowOverride All' '    Require all granted' '</Directory>' \
+		> /etc/apache2/conf-available/app.conf \
+	&& a2enconf app
