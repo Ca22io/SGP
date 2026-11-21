@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div align="center">
 
 # 📦 SGP — Sistema de Gerenciamento de Produtos
