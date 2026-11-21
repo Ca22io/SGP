@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Serviço do Banco de Dados PostgreSQL
   db:
@@ -14,6 +12,7 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
 
   # Serviço do PHP com Apache
   web:
@@ -23,10 +22,9 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - .:/var/www
+      - .:/var/www/html
     depends_on:
       - db
 
-# Define um volume nomeado para persistir os dados do PostgreSQL
 volumes:
   db_data:
