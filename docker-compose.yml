@@ -1,0 +1,30 @@
+services:
+  # Serviço do Banco de Dados PostgreSQL
+  db:
+    image: postgres:16
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: meubanco
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  # Serviço do PHP com Apache
+  web:
+    build: .
+    container_name: php_web
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+
+volumes:
+  db_data:
